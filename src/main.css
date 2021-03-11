@@ -1,14 +1,123 @@
-
 a {
   cursor: pointer;
 }
 
 html,
 body {
-  background: #D6D6CE;
+  background-color: #343333;
   font-family: Verdana, Geneva, sans-serif;
   height: 100%;
   margin: 0;
   padding: 0;
   width: 100%;
+}
+
+.title {
+  color:#ffa500;
+  padding-top: 30px;
+  text-align: center;
+}
+.subtitle{
+  color:white;
+  font-size: 20px;
+  text-align: center;
+}
+.source{
+  color: white;
+  font-style: italic;
+  font-size: 20px;
+  text-align: end;
+  margin-right: 10%;
+}
+.foot{
+  margin-top: 50px;
+  text-align: center;
+  color: #ffa500;
+}
+
+.credit{
+  color: inherit;
+  margin-left: 50px;
+}
+.map_container{
+  height: 80%;
+  display: flex;
+}
+.map1{
+  width: 80%;
+  margin: 10px auto
+}
+.mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left {
+  display: none;
+}
+#button_3d {
+  position: absolute;
+  top: 150px;
+  right: 10px;
+  background: white;
+  width: 30px;
+  padding: 7px 0;
+  text-align: center;
+  font-size: larger;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 15px;
+}
+
+
+
+#crime_button{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: white;
+  width: 200px;
+  padding: 7px 0;
+  text-align: center;
+  font-size: larger;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 15px;
+}
+
+#income_button{
+  position: absolute;
+  top: 10px;
+  left: 260px;
+  background: white;
+  width: 200px;
+  padding: 7px 0;
+  text-align: center;
+  font-size: larger;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 15px;
+}
+
+#unemp_button{
+  position: absolute;
+  top: 10px;
+  left: 510px;
+  background: white;
+  width: 200px;
+  padding: 7px 0;
+  text-align: center;
+  font-size: larger;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 15px;
+}
+
+#slider_container{
+  position: absolute;
+  top: 10px;
+  right: 50px;
+  width: 150px;
+  background: white;
+  padding: 7px 0;
+  text-align: center;
+  font-size: larger;
+  cursor: pointer;
+  font-weight: bold;
+  line-height: 15px;
 }
