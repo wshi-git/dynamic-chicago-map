@@ -9,6 +9,9 @@ import './main.css';
 
 import mapboxgl from 'mapbox-gl';
 
+var title = document.querySelector('title');
+title.innerHTML = 'Chicago Crime Map';
+
 var mapbox_css = document.createElement('link');
 mapbox_css.href = 'https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css';
 mapbox_css.rel = 'stylesheet';
