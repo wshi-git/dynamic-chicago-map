@@ -20,14 +20,21 @@ document.head.appendChild(mapbox_css);
 var app = document.querySelector('#app');
 var title = document.createElement('h1');
 title.className = 'title';
-title.innerHTML = 'Chicago Census Block Level Dynamic Crime Features Map, ';
+title.innerHTML =
+  'Chicago Census Block Level Cumulative Crime Rate Map, from 2001 to 2020';
 app.appendChild(title);
 
 var subtitle = document.createElement('h2');
 subtitle.className = 'subtitle';
 subtitle.innerHTML =
-  'Median Income have a negative correlation with Crime Rate, Unemployment Rate have a positive correlation with Crime Rate';
+  'Crime Rate - describes the number of crimes per 100,000 total population';
 app.appendChild(subtitle);
+
+var subsubtitle = document.createElement('h3');
+subsubtitle.className = 'subsubtitle';
+subsubtitle.innerHTML =
+  'Median Income have a negative correlation with Crime Rate, Unemployment Rate have a positive correlation with Crime Rate';
+app.appendChild(subsubtitle);
 
 var map_container = document.createElement('div');
 map_container.className = 'map_container';
@@ -35,7 +42,31 @@ document.body.appendChild(map_container);
 
 var source = document.createElement('div');
 source.className = 'source';
-source.innerHTML = 'Source: Chicago Open Data, ACS Data';
+source.innerHTML = 'Source: Chicago Open Data (';
+
+var source1 = document.createElement('a');
+var source2 = document.createElement('span');
+var source3 = document.createElement('a');
+var source4 = document.createElement('span');
+var source5 = document.createElement('a');
+
+source1.innerHTML = 'Crime Data';
+source1.href =
+  'https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-Present/ijzp-q8t2';
+source2.innerHTML = '; ';
+source3.innerHTML = 'Census Tracts boundary Data';
+source3.href =
+  'https://data.cityofchicago.org/Facilities-Geographic-Boundaries/Boundaries-Census-Tracts-2010/5jrd-6zik';
+source4.innerHTML = ') , ';
+source5.innerHTML = 'ACS Data';
+source5.href =
+  'https://www.census.gov/data/developers/data-sets/acs-5year.html';
+
+source.appendChild(source1);
+source.appendChild(source2);
+source.appendChild(source3);
+source.appendChild(source4);
+source.appendChild(source5);
 document.body.appendChild(source);
 
 var foot = document.createElement('div');
@@ -115,6 +146,12 @@ slider_container.appendChild(label);
 slider_container.appendChild(slider_input);
 
 map1.appendChild(slider_container);
+
+//legend
+var legend = document.createElement('div');
+legend.setAttribute('class', 'mapboxgl-ctrl-group');
+legend.setAttribute('id', 'legend');
+map1.appendChild(legend);
 
 var view2 = {
   center: [-87.6924, 41.8386],
@@ -306,8 +343,10 @@ map.on('load', function() {
   //variable switch button
   var var1 = document.getElementById('crime_button');
   var1.addEventListener('click', function() {
-    sliderValue.textContent = '80%';
     var var_name = var1.innerHTML;
+    if (map.getLayoutProperty(current_3d, 'visibility') === 'visible') {
+      map.flyTo(view1);
+    }
     map.setLayoutProperty(current_3d, 'visibility', 'none');
     var i;
     for (i = 0; i < maplist.length; i++) {
@@ -317,17 +356,19 @@ map.on('load', function() {
         current_3d = map_name + ' 3D';
         map.setLayoutProperty(current_map, 'visibility', 'visible');
         var1.className = 'mapboxgl-ctrl-group';
-        map.flyTo(view1);
       } else {
         map.setLayoutProperty(map_name, 'visibility', 'none');
       }
     }
+    setupcolor(crime_rate_color);
   });
 
   var var2 = document.getElementById('income_button');
   var2.addEventListener('click', function() {
-    sliderValue.textContent = '80%';
     var var_name = var2.innerHTML;
+    if (map.getLayoutProperty(current_3d, 'visibility') === 'visible') {
+      map.flyTo(view1);
+    }
     map.setLayoutProperty(current_3d, 'visibility', 'none');
     var i;
     for (i = 0; i < maplist.length; i++) {
@@ -337,17 +378,19 @@ map.on('load', function() {
         current_3d = map_name + ' 3D';
         map.setLayoutProperty(current_map, 'visibility', 'visible');
         var2.className = 'mapboxgl-ctrl-group';
-        map.flyTo(view1);
       } else {
         map.setLayoutProperty(map_name, 'visibility', 'none');
       }
     }
+    setupcolor(median_income_color);
   });
 
   var var3 = document.getElementById('unemp_button');
   var3.addEventListener('click', function() {
-    sliderValue.textContent = '80%';
     var var_name = var3.innerHTML;
+    if (map.getLayoutProperty(current_3d, 'visibility') === 'visible') {
+      map.flyTo(view1);
+    }
     map.setLayoutProperty(current_3d, 'visibility', 'none');
     var i;
     for (i = 0; i < maplist.length; i++) {
@@ -357,11 +400,11 @@ map.on('load', function() {
         current_3d = map_name + ' 3D';
         map.setLayoutProperty(current_map, 'visibility', 'visible');
         var3.className = 'mapboxgl-ctrl-group';
-        map.flyTo(view1);
       } else {
         map.setLayoutProperty(map_name, 'visibility', 'none');
       }
     }
+    setupcolor(unemp_pct_color);
   });
 
   //3d button
@@ -381,26 +424,47 @@ map.on('load', function() {
       map.flyTo(view1);
     }
   });
-
   //slider
   slider.addEventListener('input', function(e) {
     map.setPaintProperty(
-      current_map,
+      'Crime Rate Map',
       'fill-opacity',
       parseInt(e.target.value, 10) / 100,
     );
     map.setPaintProperty(
-      current_3d,
+      'Median Income Map',
+      'fill-opacity',
+      parseInt(e.target.value, 10) / 100,
+    );
+    map.setPaintProperty(
+      'Unemployment Rate Map',
+      'fill-opacity',
+      parseInt(e.target.value, 10) / 100,
+    );
+
+    map.setPaintProperty(
+      'Crime Rate Map 3D',
       'fill-extrusion-opacity',
       parseInt(e.target.value, 10) / 100,
     );
+    map.setPaintProperty(
+      'Median Income Map 3D',
+      'fill-extrusion-opacity',
+      parseInt(e.target.value, 10) / 100,
+    );
+    map.setPaintProperty(
+      'Unemployment Rate Map 3D',
+      'fill-extrusion-opacity',
+      parseInt(e.target.value, 10) / 100,
+    );
+
     sliderValue.textContent = e.target.value + '%';
   });
 });
 
 //tooltip
 var popup = new mapboxgl.Popup({
-  closeButton: false,
+  closeButton: true,
   closeOnClick: false,
 });
 
@@ -562,3 +626,42 @@ map.on('mousemove', 'Unemployment Rate Map 3D', function(e) {
     'unemp_pct',
   ]);
 });
+
+function setupcolor(layer) {
+  var pro = layer['property'];
+  var i;
+  var divs = document.querySelectorAll('#legend div');
+  for (i = 0; i < divs.length; i++) {
+    legend.removeChild(divs[i]);
+  }
+  if (pro === 'crime_rate') {
+    var names = [
+      '<20,000',
+      '20,000-40,000',
+      '40,000-60,000',
+      '60,000-80,000',
+      '>80,000',
+    ];
+  } else if (pro === 'Median_Income') {
+    var names = ['<50,000', '50,000-100,000', '100,000-150,000', '>150,000'];
+  } else {
+    var names = ['<10%', '10%-20%', '20%-30%', '30%-40%', '>40%'];
+  }
+  for (i = 0; i < layer['stops'].length; i++) {
+    var name = names[i];
+    var color = layer['stops'][i][1];
+    var item = document.createElement('div');
+    var key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = color;
+
+    var value = document.createElement('span');
+    value.className = 'legend-text';
+    value.innerHTML = name;
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+  }
+}
+
+setupcolor(crime_rate_color);
